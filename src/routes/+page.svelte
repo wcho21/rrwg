@@ -1,2 +1,17 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+    let word = $state("");
+
+    async function roll() {
+        const response = await fetch("/word");
+
+        word = await response.json();
+    }
+</script>
+
+<button onclick={roll}>Generate</button>
+
+{#if word !== ""}
+    <p>
+        <span style="font-size: 4em;">{word}</span>
+    </p>
+{/if}
