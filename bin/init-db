@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+import raw from "./raw.json" with { type: "json" };
+import Database from "better-sqlite3";
+
+const dbPath = "./words.db";
+initDb(dbPath);
+
+function initDb(dbPath) {
+    console.log("Initializing database...");
+
+    const database = new Database(dbPath);
+    database.pragma("journal_mode = WAL");
+
+    // init table
+    database.exec("CREATE TABLE IF NOT EXISTS words (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL)");
+    console.log("A 'words' table initialized.");
+
+    // init rows
+    const preparedInsert = database.prepare("INSERT INTO words (name, description) VALUES (?, ?)");
+    for (const [word, description] of raw) {
+        preparedInsert.run(word, description);
+    }
+    console.log("All rows initialized.");
+}
