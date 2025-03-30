@@ -1,5 +1,7 @@
 <script lang="ts">
-    let word = $state("");
+    import type { Word } from "$lib/words";
+
+    let word: Word | null = $state(null);
 
     async function roll() {
         const response = await fetch("/word");
@@ -10,8 +12,8 @@
 
 <button onclick={roll}>Generate</button>
 
-{#if word !== ""}
+{#if word !== null}
     <p>
-        <span style="font-size: 4em;">{word}</span>
+        <span style="font-size: 4em;">{word.name} {word.description}</span>
     </p>
 {/if}
