@@ -2,12 +2,21 @@
   import type { Word } from "$lib/words";
   import { fly } from "svelte/transition";
 
-  let word: Word | null = null;
+  const undeterminedWord = { name: "?", description: "" };
+  let word: Word = $state(undeterminedWord);
+  let rolling = $state(false);
 
-  async function roll() {
+  async function roll(): Promise<void> {
+    rolling = true;
+
     const response = await fetch("/word");
 
     word = await response.json();
+    rolling = false;
+  }
+
+  function isWordDetermined(): boolean {
+    return word.name !== undeterminedWord.name;
   }
 
   const flyOption = { y: 20, duration: 500 };
@@ -19,26 +28,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wdth,wght@87.5,100..900&display=swap" rel="stylesheet">
 </svelte:head>
 
-<div id="outermost-wrapper">
-  <h1 id="heading" class="noto-serif weight-700">Rare Word Generator</h1>
+<div id="outermost-wrapper" class="noto-serif weight-400">
+  <h1 id="heading" class="weight-700">Rare Word Generator</h1>
 
   <div id="main-wrapper">
-    <button id="roll" on:click={roll}>🎲</button>
+    <button id="roll" onclick={roll}>🎲</button>
+    <p id="rolling-state" class={rolling ? "shown" : "hidden"}>Rolling...</p>
 
-    {#if word !== null}
-      {#key word}
+    {#if isWordDetermined()}
+      {#key word.name}
         <div id="word" in:fly|global={flyOption}>
-          <p id="word-name" class="noto-serif weight-700">{word.name}</p>
-          <p id="word-description" class="noto-serif weight-400">{word.description}</p>
+          <p id="word-name" class="weight-700">{word.name}</p>
+          <p id="word-description">{word.description}</p>
         </div>
       {/key}
     {/if}
 
-    <p id="guide" class="noto-serif weight-500">
-      {#if word === null}
-        🔥 Hit the dice to get a random rare word! 🔥
-      {:else}
+    <p id="guide" class="weight-500">
+      {#if isWordDetermined()}
         💎 I've found the right one for you. 💎
+      {:else}
+        🔥 Hit the dice! 🔥
       {/if}
     </p>
   </div>
@@ -68,6 +78,16 @@
   @media screen and (max-width: 600px) {
     #heading {
       font-size: 30px;
+    }
+  }
+
+  #rolling-state {
+    margin-top: 6px;
+    font-size: 18px;
+  }
+  @media screen and (max-width: 600px) {
+    #rolling-state {
+      font-size: 12px;
     }
   }
 
@@ -166,5 +186,17 @@
 
   .weight-700 {
     font-weight: 700;
+  }
+
+  .shown {
+    opacity: 1;
+    transition-property: opacity;
+    transition-duration: 0.3s;
+  }
+
+  .hidden {
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.3s;
   }
 </style>
