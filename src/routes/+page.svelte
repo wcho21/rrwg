@@ -13,55 +13,158 @@
   const flyOption = { y: 20, duration: 500 };
 </script>
 
-<div id="box">
-  <button id="gen" on:click={roll}>Generate</button>
+<svelte:head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wdth,wght@87.5,100..900&display=swap" rel="stylesheet">
+</svelte:head>
 
-  {#if word === null}
-    <p id="guide">🔥 Hit the button to get a random rare word! 🔥</p>
-  {:else}
-    <p id="guide">💎 Do you like it? 💎</p>
-  {/if}
+<div id="outermost-wrapper">
+  <h1 id="heading" class="noto-serif weight-700">Rare Word Generator</h1>
 
-  {#if word !== null}
-    {#key word}
-      <div id="word" in:fly|global={flyOption}>
-        <p class="word-name">{word.name}</p>
-        <p class="word-description">{word.description}</p>
-      </div>
-    {/key}
-  {/if}
+  <div id="main-wrapper">
+    <button id="roll" on:click={roll}>🎲</button>
+
+    {#if word !== null}
+      {#key word}
+        <div id="word" in:fly|global={flyOption}>
+          <p id="word-name" class="noto-serif weight-700">{word.name}</p>
+          <p id="word-description" class="noto-serif weight-400">{word.description}</p>
+        </div>
+      {/key}
+    {/if}
+
+    <p id="guide" class="noto-serif weight-500">
+      {#if word === null}
+        🔥 Hit the dice to get a random rare word! 🔥
+      {:else}
+        💎 I've found the right one for you. 💎
+      {/if}
+    </p>
+  </div>
 </div>
 
 <style>
-  #box {
-    display: grid;
-    width: 800px;
-    margin: 0 auto;
-    padding: 10vh 0;
-    grid-column: 1;
-    gap: 2.5em;
-  }
-  #gen {
-    display: block;
-    margin: 0 auto;
-    padding: 0.5em 1em;
-    font-size: 1em;
-  }
-  #guide {
-    text-align: center;
-  }
-  p {
+  p, h1 {
     margin: 0;
   }
-  #word {
-    margin: 0 auto;
+
+  #outermost-wrapper {
+    position: relative;
+    max-width: 800px;
+    margin: 15vh auto 0 auto;
+    padding: 20px;
     text-align: center;
   }
-  .word-name {
-    font-size: 4em;
+
+  #heading {
+    color: transparent;
+    position: relative;
+    font-size: 48px;
+    z-index: 1;
+    background-clip: text;
+    background-image: linear-gradient(0deg, #d0d0d0 0%, #e0e0e0 50%, #e9e9e9 100%);
   }
-  .word-description {
-    font-size: 2em;
-    color: #999;
+  @media screen and (max-width: 600px) {
+    #heading {
+      font-size: 30px;
+    }
+  }
+
+  #main-wrapper {
+    position: relative;
+    margin-top: -0.825em;
+    padding: 20px;
+    z-index: 2;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.125) 0px 0px 15px;
+
+    background-color: #fff;
+  }
+  @media screen and (max-width: 600px) {
+    #main-wrapper {
+      margin-top: -0.5em;
+    }
+  }
+
+  #roll {
+    padding: 10px 20px;
+    background-color: #fff;
+    font-size: 36px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.125) 0px 0px 5px;
+    transition-property: transform, box-shadow, background-color;
+    transition-duration: 0.1s, 0.1s, 0.1s;
+  }
+  @media screen and (max-width: 600px) {
+    #roll {
+      font-size: 24px;
+    }
+  }
+
+  #roll:hover {
+    transition-property: transform, box-shadow, background-color;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 5px;
+    transform: scale(1.0625);
+    transition-duration: 0.1s, 0.1s, 0.1s;
+  }
+
+  #roll:active {
+    transition-property: background-color;
+    background-color: #abcdef;
+    transition-duration: 0.1s;
+  }
+
+  #guide {
+    margin-top: 20px;
+    font-size: 18px;
+  }
+  @media screen and (max-width: 600px) {
+    #guide {
+      font-size: 14px;
+    }
+  }
+
+  #word {
+    margin: 40px 0 60px 0;
+  }
+
+  #word-name {
+    font-size: 60px;
+  }
+  @media screen and (max-width: 600px) {
+    #word-name {
+      font-size: 34px;
+    }
+  }
+
+  #word-description {
+    font-size: 18px;
+  }
+  @media screen and (max-width: 600px) {
+    #word-description {
+      font-size: 14px;
+    }
+  }
+
+  .noto-serif {
+    font-family: "Noto Serif Display", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings:
+      "wdth" 87.5;
+  }
+
+  .weight-400 {
+    font-weight: 400;
+  }
+
+  .weight-500 {
+    font-weight: 500;
+  }
+
+  .weight-700 {
+    font-weight: 700;
   }
 </style>
