@@ -1,7 +1,7 @@
 import { error } from "@sveltejs/kit";
-import Database from "better-sqlite3";
-
-const database = new Database("./words.db");
+import { resolve } from "node:path";
+import words from "./words.json";
+import { random } from "lodash-es";
 
 export interface Word {
     name: string,
@@ -9,12 +9,9 @@ export interface Word {
 }
 
 export function selectRandomWord(): Word {
-    const sql = "SELECT name, description FROM words WHERE id = ((SELECT ABS(RANDOM())) % (SELECT MAX(id) FROM words) + 1) LIMIT 1";
-    const selected = database.prepare<unknown[], Word>(sql).get();
+    const randomIndex = random(0, words.length);
+    const [name, description] = words[randomIndex];
+    const randomWord = { name, description };
 
-    if (selected === undefined) {
-        error(500);
-    }
-
-    return selected;
+    return randomWord;
 }
