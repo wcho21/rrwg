@@ -1,7 +1,7 @@
 {
-    "name": "env",
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
-    "forwardPorts": [5173, 5173]
+  "name": "env",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "forwardPorts": [5173, 5173]
 }

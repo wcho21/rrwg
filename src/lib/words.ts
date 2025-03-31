@@ -1,17 +1,15 @@
-import { error } from "@sveltejs/kit";
-import { resolve } from "node:path";
 import words from "./words.json";
 import { random } from "lodash-es";
 
 export interface Word {
-    name: string,
-    description: string,
+  name: string;
+  description: string;
 }
 
 export function selectRandomWord(): Word {
-    const randomIndex = random(0, words.length);
-    const [name, description] = words[randomIndex];
-    const randomWord = { name, description };
+  const randomIndex = random(0, words.length);
+  const [name, description] = words[randomIndex];
+  const randomWord = { name, description };
 
-    return randomWord;
+  return randomWord;
 }
